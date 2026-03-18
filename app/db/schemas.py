@@ -17,7 +17,7 @@ class CityDTO(CityAddDTO):
 
 
 class CityRelDTO(CityDTO):
-    temperature: Optional["TemperatureDTO"] = None
+    temperatures: Optional[list["TemperatureDTO"]] = None
 
 
 class TemperatureAddDTO(BaseDTO):

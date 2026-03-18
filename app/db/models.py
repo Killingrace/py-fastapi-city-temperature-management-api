@@ -14,7 +14,7 @@ class CityORM(Base):
     name: Mapped[str] = mapped_column(unique=True)
     additional_info: Mapped[str]
 
-    temperature: Mapped["TemperatureORM"] = relationship(
+    temperatures: Mapped[list["TemperatureORM"]] = relationship(
         back_populates="city", cascade="all, delete-orphan"
     )
 
@@ -28,4 +28,4 @@ class TemperatureORM(Base):
     
     temperature: Mapped[float] = mapped_column(nullable=True)
 
-    city: Mapped["CityORM"] = relationship(back_populates="temperature")
+    city: Mapped["CityORM"] = relationship(back_populates="temperatures")

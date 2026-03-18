@@ -13,12 +13,12 @@ async def fetch_all_temperatures(
     db: DataBase,
 ):
     cities = await crud.select_all_cities(db=db)
-    await crud.validate_all_temperatures(db=db, cities=cities)
+    await crud.fetch_and_store_all_temperatures(db=db, cities=cities)
     return
 
 
 @temperatures_router.get("/temperatures", response_model=list[TemperatureRelDTO])
-async def get_temperature_by_id(
+async def get_temperatures(
     db: DataBase,
     city_id: int | None = None
 ):
@@ -26,10 +26,7 @@ async def get_temperature_by_id(
         city = await crud.select_city_by_id(db=db, city_id=city_id)
         if not city:
             raise CityDoesntExistError
-        
-        if not city.temperature:
-            raise NoTemperatureError
-        
+
         return await crud.select_temperature_by_city_id(db=db, city_id=city_id)
     else:
         temperatures = await crud.select_all_temperatures(db=db)

@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload,  selectinload
 from db.models import CityORM, TemperatureORM
 from db.schemas import CityAddDTO
 from tools.services import get_temperature
@@ -11,20 +11,20 @@ from tools.services import get_temperature
 async def select_all_cities(db: AsyncSession) -> list[CityORM]:
     query = (
         select(CityORM)
-        .options(joinedload(CityORM.temperature))
+        .options(selectinload(CityORM.temperatures))
     )
     cities = await db.execute(query)
-    return cities.unique().scalars().all()  # type: ignore
+    return cities.scalars().all()  # type: ignore
 
 
 async def select_city_by_id(db: AsyncSession, city_id: int) -> CityORM | None:
     query = (
         select(CityORM)
         .where(CityORM.id == city_id)
-        .options(joinedload(CityORM.temperature))
+        .options(selectinload(CityORM.temperatures))
     )
     result = await db.execute(query)
-    city = result.unique().scalars().first()
+    city = result.scalars().first()
     return city # type: ignore
 
 
@@ -33,6 +33,7 @@ async def select_city_by_name(db: AsyncSession, name: str) -> CityORM | None:
     query = (
         select(CityORM)
         .where(CityORM.name == valid_name)
+        .options(selectinload(CityORM.temperatures))
     )
     result = await db.execute(query)
     return result.scalars().first() # type: ignore
@@ -73,23 +74,21 @@ async def remove_city(db: AsyncSession, city_to_remove: CityORM) -> None:
 
 
 #==========================Temperature==============================
-async def validate_all_temperatures(db: AsyncSession, cities: list[CityORM]):
+async def fetch_and_store_all_temperatures(db: AsyncSession, cities: list[CityORM]):
     time_now = datetime.now().replace(microsecond=0)
     for city in cities:
         city_temp = await get_temperature(city_name=city.name)
 
-        if city.temperature is None:
-            city.temperature = TemperatureORM(
-                city_id=city.id,
-                temperature=city_temp,
-                date_time=time_now
-            )
+        city_temperature = TemperatureORM(
+            city_id=city.id,
+            temperature=city_temp,
+            date_time=time_now
+        )
+        db.add(city_temperature)
 
         if city_temp is None:
             city.additional_info = "Non existing city!"
 
-        city.temperature.temperature = city_temp  # type: ignore
-        city.temperature.date_time = time_now
     await db.commit()
     return
 
