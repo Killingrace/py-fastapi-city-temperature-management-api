@@ -5,7 +5,6 @@ from fastapi import FastAPI
 
 from routers.cities import cities_router
 from routers.temperatures import temperatures_router
-from db.create_database import create_tables, insert_data
 
 
 app = FastAPI()

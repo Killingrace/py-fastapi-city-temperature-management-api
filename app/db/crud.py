@@ -75,8 +75,8 @@ async def remove_city(db: AsyncSession, city_to_remove: CityORM) -> None:
 
 #==========================Temperature==============================
 async def fetch_and_store_all_temperatures(db: AsyncSession, cities: list[CityORM]):
-    time_now = datetime.now().replace(microsecond=0)
     for city in cities:
+        time_now = datetime.now().replace(microsecond=0)
         city_temp = await get_temperature(city_name=city.name)
 
         city_temperature = TemperatureORM(
@@ -85,9 +85,6 @@ async def fetch_and_store_all_temperatures(db: AsyncSession, cities: list[CityOR
             date_time=time_now
         )
         db.add(city_temperature)
-
-        if city_temp is None:
-            city.additional_info = "Non existing city!"
 
     await db.commit()
     return

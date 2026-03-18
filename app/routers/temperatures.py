@@ -6,7 +6,6 @@ from db import crud
 from db.schemas import TemperatureRelDTO
 
 temperatures_router = APIRouter()
-NoTemperatureError = HTTPException(status_code=404, detail="No temperatures fethed!")
 
 @temperatures_router.post("/temperatures/update", status_code=status.HTTP_201_CREATED)
 async def fetch_all_temperatures(

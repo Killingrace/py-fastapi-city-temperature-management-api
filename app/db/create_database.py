@@ -4,8 +4,11 @@ from db.models import CityORM
 
 async def create_tables():
     async with async_engine.begin() as db:
-        await db.run_sync(Base.metadata.drop_all)
         await db.run_sync(Base.metadata.create_all)
+
+async def drop_tables():
+    async with async_engine.begin() as db:
+        await db.run_sync(Base.metadata.drop_all)
 
 
 async def insert_data():
