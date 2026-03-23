@@ -8,7 +8,7 @@ async_engine = create_async_engine(
 )
 
 AsyncSessionGenerator = async_sessionmaker(
-    autoflush=False, autocommit= False, bind=async_engine  # type: ignore
+    autoflush=False, autocommit= False, bind=async_engine
 )
 
 class Base(DeclarativeBase):

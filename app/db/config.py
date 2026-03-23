@@ -2,8 +2,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    API_KEY: str
-    DATABASE_URL: str
+    API_KEY: str = "default_api"
+    DATABASE_URL: str = "default databaseurl"
 
     model_config = SettingsConfigDict(env_file="app/db/.env")
 
