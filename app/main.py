@@ -1,6 +1,4 @@
-import os
-from initialize_db import initialize_db
-import asyncio
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
@@ -19,9 +17,4 @@ async def hello():
 <p>Read the Swagger documentation on /docs path</p>"""
 
 if __name__ == "__main__":
-    if os.getenv("DEBUG", "False") == "True":
-        if not os.path.exists(os.getenv("DATABASE_URL", "None")):
-            asyncio.run(initialize_db())
         uvicorn.run("main:app", host="0.0.0.0", port=8080)
-    else:
-        uvicorn.run("main:app", host="localhost", port=8080)

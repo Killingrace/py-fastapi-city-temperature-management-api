@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Annotated
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey 
+from sqlalchemy import ForeignKey, String
 from db.database import Base
 
 
@@ -11,8 +11,8 @@ intpk = Annotated[int, mapped_column(primary_key=True)]
 class CityORM(Base):
     __tablename__ = "cities"
     id: Mapped[intpk]
-    name: Mapped[str] = mapped_column(unique=True)
-    additional_info: Mapped[str]
+    name: Mapped[str] = mapped_column(String(256), unique=True)
+    additional_info: Mapped[str | None] = mapped_column(String(512), nullable=True)
 
     temperatures: Mapped[list["TemperatureORM"]] = relationship(
         back_populates="city", cascade="all, delete-orphan"
