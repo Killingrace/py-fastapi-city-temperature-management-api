@@ -77,8 +77,10 @@ async def remove_city(db: AsyncSession, city_to_remove: CityORM) -> None:
 async def fetch_and_store_all_temperatures(db: AsyncSession, cities: list[CityORM]):
     for city in cities:
         time_now = datetime.now().replace(microsecond=0)
-        city_temp = await get_temperature(city_name=city.name)
-
+        try:
+            city_temp = await get_temperature(city_name=city.name)
+        except KeyError:
+            raise
         city_temperature = TemperatureORM(
             city_id=city.id,
             temperature=city_temp,

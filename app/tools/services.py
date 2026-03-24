@@ -16,3 +16,5 @@ async def get_temperature(city_name: str) -> float | None:
             return round(weather["main"]["temp"] - 273.15, 1)
         except IndexError:
             return None
+        except KeyError:
+            raise

@@ -12,7 +12,10 @@ async def fetch_all_temperatures(
     db: DataBase,
 ):
     cities = await crud.select_all_cities(db=db)
-    await crud.fetch_and_store_all_temperatures(db=db, cities=cities)
+    try:
+        await crud.fetch_and_store_all_temperatures(db=db, cities=cities)
+    except KeyError:
+        raise HTTPException(status_code=401, detail="Unauthorized API key")
     return
 
 
